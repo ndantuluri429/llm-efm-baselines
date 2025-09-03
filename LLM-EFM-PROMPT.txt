@@ -1,0 +1,167 @@
+prompt = f"""
+
+You are an expert obstetrician interpreting a fetal heart monitoring tracing (CTG) of patient record <record_id>.
+
+This tracing has been cleaned, smoothed, and downsampled. The signals are sampled at 0.25 Hz and is 90 minutes long.
+
+You are analyzing three time segments:
+1. Step 1 = 30–60 minutes before the end of the first stage of labor
+2. Step 2 = Final 30 minutes before end of first stage
+3. Step 3 = Second stage of labor
+
+Task:
+ - FIGO criteria are international clinical guidelines for interpreting fetal monitoring tracings.
+ - You will be evaluating this fetal heart monitoring tracing across three consecutive 30-minute segments of labor (Step 1–3).
+ - Evaluation of the tracing will inform and be followed by a prediction of umbilical artery pH after delivery.
+ - Your goal is to evaluate the tracing with structured clinical annotation of the CTG using the codes indicated as accurately as possible.
+
+Please provide a structured interpretation for **each segment**, including:
+
+1. **Baseline Fetal Heart Rate (FHR)** (in beats per minute (bpm)):
+  - Define this as the average FHR over at least 2 minutes within any 10-minute window.
+  - Classify as:
+    - Normal = 110–160 bpm
+    - Tachycardia = >160 bpm
+    - Bradycardia = <110 bpm
+
+2. **Baseline Variability**:
+  - Define this as fluctuations in the baseline FHR and that are irregular in amplitude and frequency by assessing standard deviations in bpm and clinical category.
+  - Classify as:
+    - Absent: 0 bpm
+    - Minimal: <5 bpm
+    - Moderate (normal): 6–25 bpm
+    - Marked: >25 bpm
+
+3. **Accelerations**:
+    - Define as abrupt increases in baseline FHR of ≥15 bpm, lasting ≥15 seconds but less than 2 minutes.
+    - Indicate whether accelerations are present by answering: "Present" or "Absent"
+
+4. **Decelerations**:
+    - Defined as temporary decreases in FHR during labor, categorized by shape and timing relative to uterine contractions.
+    - Classify any present decelerations as one of the following:
+      - **Early**: Symmetrical, gradual decrease and return of FHR, with the nadir coinciding with the peak of the contraction.
+      - **Late**: Gradual onset and return, with the nadir occurring after the peak of the contraction.
+      - **Variable**: Abrupt decrease of ≥15 bpm, lasting ≥15 seconds and <2 minutes, with variable onset, depth, and duration.
+      - **Prolonged**: Decrease of ≥15 bpm lasting ≥2 minutes but <10 minutes.
+      - **Sinusoidal**: Smooth, sine wave-like undulating FHR baseline pattern (3–5 cycles per minute), persisting for ≥20 minutes.
+    - Indicate whether decelerations are present. If so, classify the type and describe their timing in relation to uterine contractions.
+
+5. **Uterine Contraction Pattern**
+    - Define contractions as elevations in UC >1.0 sustained for ≥3 consecutive samples. (This corresponds to approximately 12 seconds of sustained elevation at a sampling rate of 0.25 Hz.)
+    - Estimate contraction frequency by counting the number of contractions that occur per 10-minute window, and report the average across the 30-minute segment.
+    - Classify as:
+      - Normal (≤5 contractions per 10 minutes)
+      - Tachysystole (>5 per 10 minutes).
+    - Mention whether contractions are associated with any type of deceleration identified above.
+
+
+6. **Interpretation (FIGO Classification)**
+  - Each 30-minute segment (Step 1–3) should be annotated using FIGO criteria by classifying as
+    - 1 = Normal
+    - 2 = Suspicious
+    - 3 = Pathological
+    - -1 = Uninterpretable
+
+7. **Prediction of Umbilical Artery pH (pH)**:
+  - floating point estimate of umbilical artery pH
+
+8. **Classification of Umbilical Artery pH (Step 4 UA pH code)**
+  - classify as:
+    - 1 = No hypoxia
+    - 2 = Mild hypoxia
+    - 3 = Severe hypoxia
+    - -1 = Uninterpretable
+
+If any measure cannot be reliably interpreted, respond with ‘Uninterpretable’. You are not permitted to access the internet.
+
+---
+
+Please return your analysis in the following format:
+
+1. A summary line (coded):
+Include a key-value pair in the JSON object called `"summary_line_coded"` in the following format:
+`<record_id>,<Step 1 FIGO code>,<Step 2 FIGO code>,<Step 3 FIGO code>,<Step 4 UA pH code>`
+
+Where the codes are:
+- FIGO classification:
+    - 1 = Normal
+    - 2 = Suspicious
+    - 3 = Pathological
+    - -1 = Uninterpretable
+- Umbilical Artery pH classification:
+    - 1 = No hypoxia
+    - 2 = Mild hypoxia
+    - 3 = Severe hypoxia
+    - -1 = Uninterpretable
+
+An example of this would look like this: `"summary_line_coded": "1001,1,2,3,2"`
+
+
+2. A structured JSON object:
+{{
+  "step_1": {{
+    "baseline_fhr": "<numeric> bpm",
+    "baseline_variability": {{
+      "std_dev": "<numeric>",
+      "category": "<Absent / Minimal / Moderate / Marked>"
+    }},
+    "accelerations": "Present / Absent",
+    "decelerations": {{
+      "present": "Yes / No",
+      "type": "<None / Early / Variable / Late / Prolonged / Sinusoidal>",
+      "associated_with_contractions": "Yes / No / Unclear"
+    }},
+    "uterine_contractions": {{
+      "frequency": "<numeric> per 10 min",
+      "classification": "<Normal / Tachysystole>"
+    }},
+    "figo_classification": "<Normal / Suspicious / Pathological / Uninterpretable>",
+    "umbilical_artery_ph_classification": "<No hypoxia / Mild hypoxia / Severe hypoxia / Uninterpretable>",
+    "umbilical_artery_ph_prediction": "<numeric>",
+    "reasoning": "<brief explanation of findings>"
+  }},
+  "step_2": {{
+    "baseline_fhr": "...",
+    "baseline_variability": {{
+      "std_dev": "...",
+      "category": "..."
+    }},
+    "accelerations": "...",
+    "decelerations": {{
+      "present": "...",
+      "type": "...",
+      "associated_with_contractions": "..."
+    }},
+    "uterine_contractions": {{
+      "frequency": "...",
+      "classification": "..."
+    }},
+    "figo_classification": "...",
+    "umbilical_artery_ph_classification": "...",
+    "umbilical_artery_ph_prediction": "",
+    "reasoning": "..."
+  }},
+  "step_3": {{
+    "baseline_fhr": "...",
+    "baseline_variability": {{
+      "std_dev": "...",
+      "category": "..."
+    }},
+    "accelerations": "...",
+    "decelerations": {{
+      "present": "...",
+      "type": "...",
+      "associated_with_contractions": "..."
+    }},
+    "uterine_contractions": {{
+      "frequency": "...",
+      "classification": "..."
+    }},
+    "figo_classification": "...",
+    "umbilical_artery_ph_classification": "...",
+    "umbilical_artery_ph_prediction": "",
+    "reasoning": "..."
+  }}
+}}
+
+"""
