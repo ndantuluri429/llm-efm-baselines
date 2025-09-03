@@ -2,12 +2,11 @@
 Relevant code and analysis for our paper: [URL]
 
 ## Overview:
- We benchmark GPT-4o and LLaMA-4 on intrapartum cardiotocography tracings, showing that while large language models (LLM) can capture simple time-series patterns and sometimes rival expert consensus, they still lag far behind specialized deep learning models for acidemia prediction.
+We benchmark GPT-4o and LLaMA-4 on intrapartum cardiotocography tracings, showing that while large language models (LLM) can capture simple time-series patterns and sometimes rival expert consensus, they still lag far behind specialized deep learning models for acidemia prediction.
 
 ## Repository Contents:
-```
-# /LLM-EFM-PROMPT
-```
+
+### /LLM-EFM-PROMPT
 Prompt template used for zero-shot LLM analysis of raw electronic fetal monitoring (EFM) time-series tracings.
 
 ### /LLM_annotation_analysis.py
