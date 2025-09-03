@@ -3,6 +3,7 @@ Relevant code and analysis for our paper: [URL]
 
 ## Overview:
 We benchmark GPT-4o and LLaMA-4 on intrapartum cardiotocography tracings, showing that while large language models (LLM) can capture simple time-series patterns and sometimes rival expert consensus, they still lag far behind specialized deep learning models for acidemia prediction.
+
 <img width="854" height="465" alt="Screenshot 2025-09-03 at 12 21 57 PM" src="https://github.com/user-attachments/assets/2a081890-f6a1-448e-8ec4-4433e1e6690a" />
 
 ## Repository Contents:
