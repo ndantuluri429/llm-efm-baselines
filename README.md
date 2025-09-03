@@ -1,6 +1,5 @@
-# llm-efm-baselines
-**Establishing Large Language Model Baselines for Physiological Time Series: Insights from Intrapartum Electronic Fetal Monitoring**
-Relevant code and analysis for [URL]
+# Establishing Large Language Model Baselines for Physiological Time Series: Insights from Intrapartum Electronic Fetal Monitoring
+Relevant code and analysis for our paper: [URL]
 
 ## Overview:
  We benchmark GPT-4o and LLaMA-4 on intrapartum cardiotocography tracings, showing that while large language models (LLM) can capture simple time-series patterns and sometimes rival expert consensus, they still lag far behind specialized deep learning models for acidemia prediction.
