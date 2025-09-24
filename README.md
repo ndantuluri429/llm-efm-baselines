@@ -20,4 +20,3 @@ Implementation of the “interpretation-only” configuration. In this setting, 
 ## Data:
 - Data is drawn from the CTU-UHB intrapartum cardiotocography database https://www.physionet.org/content/ctu-uhb-ctgdb/1.0.0/.
 - Expert annotations were derived from https://people.ciirc.cvut.cz/~spilkjir/data.html
-- Replication requires access to the dataset under its original license.
